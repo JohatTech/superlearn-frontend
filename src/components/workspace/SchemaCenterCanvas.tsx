@@ -126,6 +126,18 @@ export default function SchemaCenterCanvas({
     }
   };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      try {
+        const result = await api.uploadMindMap(e.target.files[0]);
+        // Update nodes and edges based on result if needed, or refresh graph
+        onRefreshUserGraph();
+      } catch (err) {
+        console.error("Failed to upload mind map", err);
+      }
+    }
+  };
+
   return (
     <main className="workspace-center-canvas">
       {/* Floating Canvas Header Toolbar */}
@@ -160,6 +172,16 @@ export default function SchemaCenterCanvas({
           >
             {isDiffing ? <><span className="spinner" style={{ width: 12, height: 12 }} /> Diffing...</> : "🧭 Run Confusion Compass"}
           </button>
+          
+          <label className="btn btn-secondary btn-sm" style={{ cursor: "pointer", marginLeft: "8px" }}>
+            📸 Upload Mind Map
+            <input
+              type="file"
+              accept="image/*"
+              style={{ display: "none" }}
+              onChange={handleFileUpload}
+            />
+          </label>
         </div>
       </div>
 

@@ -59,6 +59,13 @@ export const api = {
       }),
     }),
   diffGraphs: () => request<any>("/api/v1/schema/diff"),
+  uploadMindMap: async (file: File) => {
+    const form = new FormData();
+    form.append("file", file);
+    const res = await fetch(`${API_BASE}/api/v1/schema/parse-mindmap`, { method: "POST", body: form });
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+  },
 
   // ── Multisource Contrast Ingestion ──────────────────────────────────────────
   uploadDocument: async (file: File, source_name: string) => {
