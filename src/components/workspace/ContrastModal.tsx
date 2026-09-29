@@ -113,7 +113,7 @@ export default function ContrastModal({
             <div className="form-label" style={{ marginBottom: "0.5rem" }}>
               Index New Canonical Document
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr auto", gap: "0.75rem", alignItems: "flex-end" }}>
+            <div className="responsive-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr auto", gap: "0.75rem", alignItems: "flex-end" }}>
               <div>
                 <label className="form-label">Source Title</label>
                 <input
@@ -153,7 +153,7 @@ export default function ContrastModal({
             <div className="form-label" style={{ marginBottom: "0.5rem" }}>
               Cross-Document Alignment Query
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr auto", gap: "0.75rem", alignItems: "flex-end" }}>
+            <div className="responsive-grid-2" style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr auto", gap: "0.75rem", alignItems: "flex-end" }}>
               <div>
                 <label className="form-label">Concept / Question</label>
                 <input
@@ -194,7 +194,7 @@ export default function ContrastModal({
 
           {/* Split Panes Results */}
           {(passagesA.length > 0 || passagesB.length > 0) && (
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+            <div className="responsive-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
               <div>
                 <div style={{ fontWeight: 700, fontSize: "0.85rem", marginBottom: "0.5rem" }}>
                   <span className="badge badge-primary">{sourceA}</span>

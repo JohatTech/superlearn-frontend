@@ -19,7 +19,7 @@ export default function AnalyticsPage() {
   useEffect(() => {
     Promise.all([
       api.getGraph().catch(() => ({ nodes: [], edges: [] })),
-      api.getRecommendations(10).catch(() => ({ recommendations: [] })),
+      api.getRecommendations(undefined, 10).catch(() => ({ recommendations: [] })),
     ]).then(([graphData, recsData]) => {
       const parsedConcepts: ConceptMetric[] = (graphData?.nodes || []).map((node: any) => ({
         id: node.id,
@@ -71,16 +71,16 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Aggregate KPI Stat Cards */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem", marginBottom: "2rem" }}>
+        <div className="responsive-grid-4" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem", marginBottom: "2rem" }}>
           <div style={{ background: "var(--bg-1)", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-md)", padding: "1.25rem" }}>
             <div style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--text-2)", textTransform: "uppercase" }}>Total Concepts</div>
-            <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--text-0)", marginTop: "0.25rem" }}>{totalConcepts}</div>
+            <div style={{ fontSize: "1.75rem", fontWeight: 800, color: "var(--text-0)", marginTop: "0.25rem" }}>{totalConcepts}</div>
             <div style={{ fontSize: "0.72rem", color: "var(--accent-secondary)", marginTop: "0.2rem" }}>{graphEdgeCount} Prerequisite Edges</div>
           </div>
 
           <div style={{ background: "var(--bg-1)", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-md)", padding: "1.25rem" }}>
             <div style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--text-2)", textTransform: "uppercase" }}>Average Mastery</div>
-            <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--accent-primary)", marginTop: "0.25rem" }}>
+            <div style={{ fontSize: "1.75rem", fontWeight: 800, color: "var(--accent-primary)", marginTop: "0.25rem" }}>
               {Math.round(averageMastery * 100)}%
             </div>
             <div style={{ fontSize: "0.72rem", color: "var(--text-2)", marginTop: "0.2rem" }}>Across all indexed nodes</div>
@@ -88,13 +88,13 @@ export default function AnalyticsPage() {
 
           <div style={{ background: "var(--bg-1)", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-md)", padding: "1.25rem" }}>
             <div style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--text-2)", textTransform: "uppercase" }}>Mastered Concepts</div>
-            <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--accent-success)", marginTop: "0.25rem" }}>{masteredCount}</div>
+            <div style={{ fontSize: "1.75rem", fontWeight: 800, color: "var(--accent-success)", marginTop: "0.25rem" }}>{masteredCount}</div>
             <div style={{ fontSize: "0.72rem", color: "var(--text-2)", marginTop: "0.2rem" }}>Mastery ≥ 85%</div>
           </div>
 
           <div style={{ background: "var(--bg-1)", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-md)", padding: "1.25rem" }}>
             <div style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--text-2)", textTransform: "uppercase" }}>In FSRS Queue</div>
-            <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--accent-warn)", marginTop: "0.25rem" }}>{recommendations.length}</div>
+            <div style={{ fontSize: "1.75rem", fontWeight: 800, color: "var(--accent-warn)", marginTop: "0.25rem" }}>{recommendations.length}</div>
             <div style={{ fontSize: "0.72rem", color: "var(--text-2)", marginTop: "0.2rem" }}>Targeting R ≈ 75%</div>
           </div>
         </div>
@@ -109,7 +109,7 @@ export default function AnalyticsPage() {
             <div style={{ width: `${(inProgressCount / Math.max(1, totalConcepts)) * 100}%`, background: "var(--accent-primary)" }} title="In Progress" />
             <div style={{ width: `${(unstartedCount / Math.max(1, totalConcepts)) * 100}%`, background: "var(--bg-4)" }} title="Unstarted" />
           </div>
-          <div style={{ display: "flex", gap: "1.5rem", fontSize: "0.78rem" }}>
+          <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", fontSize: "0.78rem" }}>
             <span style={{ color: "var(--accent-success)" }}>● Mastered: {masteredCount}</span>
             <span style={{ color: "var(--accent-primary)" }}>● In Progress: {inProgressCount}</span>
             <span style={{ color: "var(--text-2)" }}>● Unstarted: {unstartedCount}</span>
@@ -130,6 +130,7 @@ export default function AnalyticsPage() {
               {concepts.map((concept) => (
                 <div
                   key={concept.id}
+                  className="responsive-flex-stack"
                   style={{
                     background: "var(--bg-2)",
                     border: "1px solid var(--border-subtle)",
@@ -138,15 +139,16 @@ export default function AnalyticsPage() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
+                    gap: "0.75rem",
                   }}
                 >
-                  <div style={{ maxWidth: "60%" }}>
+                  <div style={{ maxWidth: "100%" }}>
                     <div style={{ fontWeight: 600, fontSize: "0.85rem", color: "var(--text-0)" }}>{concept.name}</div>
                     {concept.description && (
                       <div style={{ fontSize: "0.72rem", color: "var(--text-2)", marginTop: "0.15rem" }}>{concept.description}</div>
                     )}
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", justifyContent: "space-between", width: "100%", maxWidth: "220px" }}>
                     <span className="badge badge-primary">Bloom L{concept.bloom_level}</span>
                     <div style={{ width: 100 }}>
                       <div style={{ fontSize: "0.72rem", color: "var(--text-2)", textAlign: "right", marginBottom: "0.2rem" }}>
