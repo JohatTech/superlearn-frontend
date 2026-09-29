@@ -570,11 +570,6 @@ export default function SchemaCenterCanvas({
               {nodes.length} {nodes.length === 1 ? "Concept" : "Concepts"}
             </span>
           </div>
-          {statusMessage && (
-            <div className="canvas-pill" style={{ color: "var(--accent-secondary)", fontSize: "0.72rem" }}>
-              {statusMessage}
-            </div>
-          )}
         </div>
 
         <div className="canvas-toolbar-group">

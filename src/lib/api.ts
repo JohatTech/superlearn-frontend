@@ -1,4 +1,4 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8001";
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
@@ -10,6 +10,34 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
     throw new Error(`API error ${res.status}: ${err}`);
   }
   return res.json();
+}
+
+export interface SyllabusModelResult {
+  model_id: string;
+  model_name: string;
+  provider: string;
+  model_tag: string;
+  status: "success" | "error";
+  error_message?: string | null;
+  metrics: {
+    inference_time_seconds: number;
+    gpu_model: string;
+    gpu_usage_percent: number;
+    vram_used_mb: number;
+    vram_total_mb: number;
+    topic_count: number;
+  };
+  syllabus?: {
+    syllabus_title: string;
+    description: string;
+    topics: { name: string; description: string }[];
+  } | null;
+}
+
+export interface MultiModelCompareResponse {
+  topic: string;
+  timestamp: number;
+  models: SyllabusModelResult[];
 }
 
 export const api = {
@@ -127,6 +155,63 @@ export const api = {
     return res.json();
   },
 
+  // ── Study Materials & References Search ─────────────────────────────────────
+  searchReferences: (conceptName: string, conceptDescription?: string) => {
+    const params = new URLSearchParams({ concept_name: conceptName });
+    if (conceptDescription) params.append("concept_description", conceptDescription);
+    return request<any>(`/api/v1/references/search?${params.toString()}`);
+  },
+  streamReferences: async (
+    conceptName: string,
+    conceptDescription: string = "",
+    onReference: (ref: any) => void,
+    onComplete?: () => void
+  ) => {
+    const params = new URLSearchParams({ concept_name: conceptName });
+    if (conceptDescription) params.append("concept_description", conceptDescription);
+    const res = await fetch(`${API_BASE}/api/v1/references/stream?${params.toString()}`);
+    if (!res.ok) throw new Error(await res.text());
+
+    const reader = res.body?.getReader();
+    if (!reader) return;
+
+    const decoder = new TextDecoder("utf-8");
+    let buffer = "";
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n");
+      buffer = lines.pop() || ""; // keep incomplete line chunk
+
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        try {
+          const item = JSON.parse(line.trim());
+          if (item.error) {
+            console.error("Reference stream item error:", item.error);
+          } else {
+            onReference(item);
+          }
+        } catch (e) {
+          console.warn("Failed to parse reference stream line:", e);
+        }
+      }
+    }
+
+    if (buffer.trim()) {
+      try {
+        const item = JSON.parse(buffer.trim());
+        if (!item.error) onReference(item);
+      } catch (e) {
+        // ignore incomplete tail
+      }
+    }
+
+    if (onComplete) onComplete();
+  },
+
   // ── Multisource Contrast Ingestion ──────────────────────────────────────────
   uploadDocument: async (file: File, source_name: string) => {
     const form = new FormData();
@@ -183,6 +268,11 @@ export const api = {
         body: JSON.stringify({ topic }),
       }
     ),
+  compareSyllabusModels: (topic: string) =>
+    request<MultiModelCompareResponse>("/api/v1/syllabus-master/compare-models", {
+      method: "POST",
+      body: JSON.stringify({ topic }),
+    }),
   approveSyllabus: (payload: {
     topic_query: string;
     syllabus_title: string;

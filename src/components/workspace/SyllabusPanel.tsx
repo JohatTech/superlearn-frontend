@@ -67,18 +67,18 @@ export default function SyllabusPanel({
   return (
     <aside className="workspace-left-panel">
       {/* Panel Header */}
-      <div className="panel-header">
-        <div>
-          <div className="panel-title">🗺️ Syllabus & Queue</div>
+      <div className="panel-header" style={{ flexWrap: "wrap", gap: "0.5rem" }}>
+        <div style={{ minWidth: 0, flex: "1 1 140px" }}>
+          <div className="panel-title" style={{ wordBreak: "break-word", overflowWrap: "anywhere" }}>🗺️ Syllabus & Queue</div>
           <div className="panel-subtitle">{concepts.length} concepts · FSRS Spaced Schedule</div>
         </div>
-        <div style={{ display: "flex", gap: "0.35rem" }}>
+        <div style={{ display: "flex", gap: "0.35rem", flexShrink: 0 }}>
           <button
             className="btn btn-secondary btn-sm"
-            title="Open Multisource Contrast Reader"
+            title="Search References per Syllabus Concept"
             onClick={onOpenContrastModal}
           >
-            📚 Contrast
+            🔍 Search References
           </button>
           <button
             className="btn btn-primary btn-sm"
@@ -150,11 +150,11 @@ export default function SyllabusPanel({
                     className={`concept-item-card ${isSelected ? "active" : ""}`}
                     onClick={() => onSelectConcept(rec.id)}
                   >
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "0.5rem" }}>
                       <span className="concept-item-name">{rec.name}</span>
-                      <span className="badge badge-cyan">R={Math.round(rec.retrievability * 100)}%</span>
+                      <span className="badge badge-cyan" style={{ flexShrink: 0 }}>R={Math.round(rec.retrievability * 100)}%</span>
                     </div>
-                    <div style={{ fontSize: "0.7rem", color: "var(--text-2)", marginTop: "0.2rem" }}>
+                    <div style={{ fontSize: "0.7rem", color: "var(--text-2)", marginTop: "0.2rem", wordBreak: "break-word", overflowWrap: "anywhere" }}>
                       {rec.reason}
                     </div>
                     <div className="progress-track">
@@ -189,9 +189,9 @@ export default function SyllabusPanel({
                   className={`concept-item-card ${isSelected ? "active" : ""}`}
                   onClick={() => onSelectConcept(concept.id)}
                 >
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "0.5rem" }}>
                     <span className="concept-item-name">{concept.name}</span>
-                    <span className="badge badge-primary">{Math.round((concept.mastery || 0) * 100)}%</span>
+                    <span className="badge badge-primary" style={{ flexShrink: 0 }}>{Math.round((concept.mastery || 0) * 100)}%</span>
                   </div>
                   <div className="progress-track">
                     <div className="progress-bar-fill" style={{ width: `${(concept.mastery || 0) * 100}%` }} />

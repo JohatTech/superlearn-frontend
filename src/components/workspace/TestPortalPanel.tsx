@@ -267,6 +267,9 @@ export default function TestPortalPanel({
                       fontWeight: 600,
                       fontSize: "0.85rem",
                       color: selectedConceptName ? "var(--text-0)" : "var(--text-2)",
+                      wordBreak: "break-word",
+                      overflowWrap: "anywhere",
+                      lineHeight: "1.35",
                     }}
                   >
                     {selectedConceptName || "← Select a concept from the syllabus"}

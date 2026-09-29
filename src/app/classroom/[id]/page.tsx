@@ -6,7 +6,7 @@ import { api } from "@/lib/api";
 import SchemaCenterCanvas from "@/components/workspace/SchemaCenterCanvas";
 import TestPortalPanel from "@/components/workspace/TestPortalPanel";
 import ClassroomSyllabusPanel from "@/components/workspace/ClassroomSyllabusPanel";
-import ContrastModal from "@/components/workspace/ContrastModal";
+import SearchReferencesModal from "@/components/workspace/SearchReferencesModal";
 
 interface ClassroomDetails {
   id: string;
@@ -49,8 +49,13 @@ export default function ClassroomStudyPage() {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
-  // Contrast Reader Modal state
-  const [isContrastOpen, setIsContrastOpen] = useState(false);
+  // Search References Modal state
+  const [isReferencesOpen, setIsReferencesOpen] = useState(false);
+  const [selectedReferenceConcept, setSelectedReferenceConcept] = useState<{ name: string; description?: string } | null>(null);
+
+  const handleOpenSearchReferences = (conceptName: string, conceptDescription?: string) => {
+    router.push(`/classroom/${classroomId}/references?concept=${encodeURIComponent(conceptName)}`);
+  };
 
   // ── 1. Load Classroom & Workspace Data ──────────────────────────────────────
   const loadClassroomData = useCallback(async () => {
@@ -194,7 +199,7 @@ export default function ClassroomStudyPage() {
           </div>
         )}
 
-        {/* Navigation & Contrast Link */}
+        {/* Navigation & Search References Link */}
         <div className="nav-links">
           <a
             href="/analytics"
@@ -206,10 +211,14 @@ export default function ClassroomStudyPage() {
           </a>
           <button
             className="nav-btn"
-            onClick={() => setIsContrastOpen(true)}
-            title="Cross-Document Contrast Alignment"
+            onClick={() => {
+              const conceptName = activeTopic ? activeTopic.name : (classroom.syllabus[0]?.name || "");
+              const conceptDesc = activeTopic ? activeTopic.description : (classroom.syllabus[0]?.description || "");
+              handleOpenSearchReferences(conceptName, conceptDesc);
+            }}
+            title="Search References per Concept across Web, Papers & Books"
           >
-            📚 Contrast
+            🔍 Search References
           </button>
         </div>
       </header>
@@ -226,6 +235,7 @@ export default function ClassroomStudyPage() {
           onSelectTopic={(t) => {
             handleSelectTopic(t);
           }}
+          onOpenSearchReferences={handleOpenSearchReferences}
         />
 
         {/* Center Canvas: Mental Model Schema (React Flow) */}
@@ -252,11 +262,12 @@ export default function ClassroomStudyPage() {
         />
       </div>
 
-      {/* ── Multisource Contrast Reader Modal ───────────────────────────────── */}
-      <ContrastModal
-        isOpen={isContrastOpen}
-        onClose={() => setIsContrastOpen(false)}
-        initialQuery={activeTopic ? activeTopic.name : ""}
+      {/* ── Search References Modal ────────────────────────────────────────── */}
+      <SearchReferencesModal
+        isOpen={isReferencesOpen}
+        onClose={() => setIsReferencesOpen(false)}
+        initialConceptName={selectedReferenceConcept?.name || (activeTopic ? activeTopic.name : "")}
+        initialConceptDescription={selectedReferenceConcept?.description || (activeTopic ? activeTopic.description : "")}
       />
 
       {/* ── Mobile Bottom Navigation Bar ──────────────────────────────────── */}

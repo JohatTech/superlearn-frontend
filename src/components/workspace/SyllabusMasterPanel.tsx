@@ -149,16 +149,25 @@ export default function SyllabusMasterPanel({ onRefreshClassrooms, className = "
                 autoFocus
               />
               <p style={{ fontSize: "0.75rem", color: "var(--text-2)", lineHeight: 1.4 }}>
-                Enter any topic. The Syllabus Master will design a university-level curriculum, deconstruct the concepts, and set up your study classroom.
+                Enter any topic. Generate directly or benchmark side-by-side across 3 AI models (Phi, Qwen, Azure OpenAI) with real-time GPU performance statistics.
               </p>
-              <button
-                className="btn btn-primary"
-                style={{ padding: "0.7rem", marginTop: "0.5rem" }}
-                onClick={handleGenerate}
-                disabled={!topic.trim()}
-              >
-                Draft Syllabus Path →
-              </button>
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", marginTop: "0.5rem" }}>
+                <button
+                  className="btn btn-primary"
+                  style={{ padding: "0.7rem", fontWeight: 700 }}
+                  onClick={() => router.push(`/syllabus${topic.trim() ? `?topic=${encodeURIComponent(topic.trim())}` : ""}`)}
+                >
+                  ⚡ Multi-Model Compare (Phi, Qwen, Azure) →
+                </button>
+                <button
+                  className="btn btn-secondary"
+                  style={{ padding: "0.6rem", fontSize: "0.8rem" }}
+                  onClick={handleGenerate}
+                  disabled={!topic.trim()}
+                >
+                  Draft Single Syllabus Path →
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -183,11 +192,22 @@ export default function SyllabusMasterPanel({ onRefreshClassrooms, className = "
             <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label className="form-label">Syllabus / Classroom Title</label>
-                <input
-                  className="input"
+                <textarea
+                  className="textarea"
                   value={syllabusTitle}
                   onChange={(e) => setSyllabusTitle(e.target.value)}
-                  style={{ fontWeight: 700, fontSize: "0.9rem" }}
+                  ref={(el) => {
+                    if (el) {
+                      el.style.height = "auto";
+                      el.style.height = el.scrollHeight + "px";
+                    }
+                  }}
+                  onInput={(e) => {
+                    e.currentTarget.style.height = "auto";
+                    e.currentTarget.style.height = e.currentTarget.scrollHeight + "px";
+                  }}
+                  rows={1}
+                  style={{ fontWeight: 700, fontSize: "0.9rem", resize: "none", overflow: "hidden", fontFamily: "inherit", minHeight: "38px" }}
                 />
               </div>
               <div className="form-group" style={{ marginBottom: 0 }}>
@@ -196,7 +216,18 @@ export default function SyllabusMasterPanel({ onRefreshClassrooms, className = "
                   className="textarea"
                   value={syllabusDescription}
                   onChange={(e) => setSyllabusDescription(e.target.value)}
-                  style={{ minHeight: "60px", fontFamily: "inherit", fontSize: "0.78rem" }}
+                  ref={(el) => {
+                    if (el) {
+                      el.style.height = "auto";
+                      el.style.height = el.scrollHeight + "px";
+                    }
+                  }}
+                  onInput={(e) => {
+                    e.currentTarget.style.height = "auto";
+                    e.currentTarget.style.height = e.currentTarget.scrollHeight + "px";
+                  }}
+                  rows={2}
+                  style={{ minHeight: "60px", fontFamily: "inherit", fontSize: "0.78rem", resize: "none", overflow: "hidden" }}
                 />
               </div>
             </div>
@@ -229,18 +260,41 @@ export default function SyllabusMasterPanel({ onRefreshClassrooms, className = "
                     <div className="syllabus-item-order">{idx + 1}</div>
                     
                     <div className="syllabus-item-content">
-                      <input
-                        className="syllabus-item-input"
+                      <textarea
+                        className="syllabus-item-input-textarea"
                         value={t.name}
                         onChange={(e) => handleUpdateTopicName(idx, e.target.value)}
+                        ref={(el) => {
+                          if (el) {
+                            el.style.height = "auto";
+                            el.style.height = el.scrollHeight + "px";
+                          }
+                        }}
+                        onInput={(e) => {
+                          e.currentTarget.style.height = "auto";
+                          e.currentTarget.style.height = e.currentTarget.scrollHeight + "px";
+                        }}
                         placeholder="Topic Title"
+                        rows={1}
+                        style={{ resize: "none", overflow: "hidden" }}
                       />
                       <textarea
                         className="syllabus-item-textarea"
                         value={t.description}
                         onChange={(e) => handleUpdateTopicDesc(idx, e.target.value)}
+                        ref={(el) => {
+                          if (el) {
+                            el.style.height = "auto";
+                            el.style.height = el.scrollHeight + "px";
+                          }
+                        }}
+                        onInput={(e) => {
+                          e.currentTarget.style.height = "auto";
+                          e.currentTarget.style.height = e.currentTarget.scrollHeight + "px";
+                        }}
                         placeholder="Brief explanation..."
-                        rows={2}
+                        rows={1}
+                        style={{ resize: "none", overflow: "hidden" }}
                       />
                     </div>
 

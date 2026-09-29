@@ -267,6 +267,7 @@ html, body {
   cursor: pointer;
   transition: all 0.15s ease;
   position: relative;
+  min-width: 0;
 }
 .concept-item-card:hover {
   background: var(--bg-3);
@@ -283,6 +284,11 @@ html, body {
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--text-0);
+  flex: 1;
+  min-width: 0;
+  line-height: 1.35;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .concept-item-meta {
@@ -559,15 +565,16 @@ html, body {
   font-weight: 700;
   color: var(--text-0);
   margin-bottom: 0.5rem;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.35;
 }
 .classroom-card-desc {
   font-size: 0.8rem;
   color: var(--text-2);
   line-height: 1.5;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  word-break: break-word;
+  overflow-wrap: anywhere;
   flex-grow: 1;
   margin-bottom: 1rem;
 }
@@ -623,6 +630,7 @@ html, body {
   gap: 0.75rem;
   position: relative;
   transition: border-color 0.15s ease;
+  min-width: 0;
 }
 .syllabus-preview-item:hover {
   border-color: var(--border);
@@ -645,12 +653,14 @@ html, body {
 
 .syllabus-item-content {
   flex-grow: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
 }
 
-.syllabus-item-input {
+.syllabus-item-input,
+.syllabus-item-input-textarea {
   background: transparent;
   border: none;
   border-bottom: 1px dashed var(--border-subtle);
@@ -660,9 +670,19 @@ html, body {
   padding: 0.1rem 0;
   width: 100%;
   outline: none;
+  font-family: inherit;
+  resize: none;
+  field-sizing: content;
+  line-height: 1.35;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
-.syllabus-item-input:focus {
+.syllabus-item-input:focus,
+.syllabus-item-input-textarea:focus {
   border-bottom-color: var(--accent-primary);
+  background: var(--bg-3);
+  border-radius: 4px;
+  padding: 0.2rem 0.3rem;
 }
 
 .syllabus-item-textarea {
@@ -673,8 +693,12 @@ html, body {
   padding: 0.1rem 0;
   width: 100%;
   resize: none;
+  field-sizing: content;
   outline: none;
   line-height: 1.4;
+  font-family: inherit;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 .syllabus-item-textarea:focus {
   background: var(--bg-3);

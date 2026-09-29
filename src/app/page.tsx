@@ -121,8 +121,8 @@ export default function UnifiedStudyWorkspacePage() {
                     onClick={() => router.push(`/classroom/${c.id}`)}
                     style={{ justifyContent: "space-between" }}
                   >
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.1rem", overflow: "hidden" }}>
-                      <div style={{ fontSize: "0.8rem", fontWeight: 700, textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.1rem", overflow: "hidden", minWidth: 0, flex: 1 }}>
+                      <div style={{ fontSize: "0.8rem", fontWeight: 700, wordBreak: "break-word", overflowWrap: "anywhere", lineHeight: 1.35 }}>
                         {c.title}
                       </div>
                       <div style={{ fontSize: "0.68rem", color: "var(--text-2)" }}>
@@ -182,19 +182,21 @@ export default function UnifiedStudyWorkspacePage() {
             >
               <div>
                 <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--text-0)" }}>
-                  🎓 Build a New Academic Syllabus
+                  ⚡ Multi-Model Syllabus Benchmark Engine
                 </div>
                 <div style={{ fontSize: "0.75rem", color: "var(--text-2)", marginTop: "0.15rem" }}>
-                  Enter any topic to generate a university-level curriculum.
+                  Compare Phi-4, Qwen-2.5, and Azure OpenAI side-by-side with real-time GPU & performance metrics.
                 </div>
               </div>
-              <button
-                className="btn btn-primary"
-                onClick={() => setMobileTab("syllabus")}
-                style={{ padding: "0.6rem 1rem", fontSize: "0.82rem" }}
-              >
-                + Create Syllabus Path
-              </button>
+              <div style={{ display: "flex", gap: "0.5rem" }}>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => router.push("/syllabus")}
+                  style={{ padding: "0.6rem 1rem", fontSize: "0.82rem", fontWeight: 700 }}
+                >
+                  🚀 Benchmark 3 Models
+                </button>
+              </div>
             </div>
 
             {/* Classrooms Grid Section */}
