@@ -104,6 +104,7 @@ export default function ClassroomReferencesPage() {
       );
     } catch (err: any) {
       setErrorMessage(err.message || "Error streaming references.");
+    } finally {
       setIsStreaming(false);
       streamingRef.current = false;
     }

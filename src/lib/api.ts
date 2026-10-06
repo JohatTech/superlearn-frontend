@@ -173,43 +173,48 @@ export const api = {
     if (!res.ok) throw new Error(await res.text());
 
     const reader = res.body?.getReader();
-    if (!reader) return;
+    if (!reader) {
+      if (onComplete) onComplete();
+      return;
+    }
 
     const decoder = new TextDecoder("utf-8");
     let buffer = "";
 
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split("\n");
-      buffer = lines.pop() || ""; // keep incomplete line chunk
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || ""; // keep incomplete line chunk
 
-      for (const line of lines) {
-        if (!line.trim()) continue;
-        try {
-          const item = JSON.parse(line.trim());
-          if (item.error) {
-            console.error("Reference stream item error:", item.error);
-          } else {
-            onReference(item);
+        for (const line of lines) {
+          if (!line.trim()) continue;
+          try {
+            const item = JSON.parse(line.trim());
+            if (item.error) {
+              console.error("Reference stream item error:", item.error);
+            } else {
+              onReference(item);
+            }
+          } catch (e) {
+            console.warn("Failed to parse reference stream line:", e);
           }
-        } catch (e) {
-          console.warn("Failed to parse reference stream line:", e);
         }
       }
-    }
 
-    if (buffer.trim()) {
-      try {
-        const item = JSON.parse(buffer.trim());
-        if (!item.error) onReference(item);
-      } catch (e) {
-        // ignore incomplete tail
+      if (buffer.trim()) {
+        try {
+          const item = JSON.parse(buffer.trim());
+          if (!item.error) onReference(item);
+        } catch (e) {
+          // ignore incomplete tail
+        }
       }
+    } finally {
+      if (onComplete) onComplete();
     }
-
-    if (onComplete) onComplete();
   },
 
   // ── Multisource Contrast Ingestion ──────────────────────────────────────────
